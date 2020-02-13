@@ -1,3 +1,10 @@
 {
-    "python.pythonPath": "C:\\Users\\jeongseunghoon\\.virtualenvs\\airbnb-clone-sCGaDhNR\\Scripts\\python.exe"
+    "python.pythonPath": "C:\\Users\\jeongseunghoon\\.virtualenvs\\airbnb-clone-sCGaDhNR\\Scripts\\python.exe",
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.formatting.provider": "black",
+    "python.linting.flake8Args": [
+        "--max--line--length=88"
+    ]
 }
