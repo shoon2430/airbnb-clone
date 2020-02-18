@@ -1,6 +1,9 @@
+from pprint import pprint
 from django.db import models
+from django.urls import reverse
 from django_countries.fields import CountryField
 from core import models as core_models
+
 
 # from users import models as user_models
 
@@ -109,3 +112,6 @@ class Room(core_models.TimeStampModel):
             return 0
 
         return round(all_ratings / len(all_reviews), 1)
+
+    def get_absolute_url(self):
+        return reverse("rooms:detail", kwargs={"pk": self.pk})
