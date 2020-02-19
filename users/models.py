@@ -1,5 +1,12 @@
+import uuid
+
+from django.utils.html import strip_tags
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
 from rooms import models as room_models
 
 # Create your models here.
@@ -41,9 +48,42 @@ class User(AbstractUser):
     bio = models.TextField(blank=True)
     birthdate = models.DateField(null=True, blank=True)
     language = models.CharField(
-        choices=LANGUAGE_CHOICES, null=True, blank=True, max_length=2
+        choices=LANGUAGE_CHOICES,
+        null=True,
+        blank=True,
+        max_length=2,
+        default=LANGUAGE_KOREAN,
     )
     currency = models.CharField(
-        choices=CURRENCY_CHOICES, null=True, blank=True, max_length=3
+        choices=CURRENCY_CHOICES,
+        null=True,
+        blank=True,
+        max_length=3,
+        default=CURRENCY_KRW,
     )
     superhost = models.BooleanField(default=False)
+
+    email_verified = models.BooleanField(default=False)
+    email_secret = models.CharField(max_length=120, default="", blank=True)
+
+    def verify_email(self):
+        if self.email_verified is False:
+            secret = uuid.uuid4().hex
+            self.email_secret = secret
+
+            html_massage = render_to_string(
+                "emails/verify_email.html", {"secret": secret}
+            )
+
+            send_mail(
+                "Verify Airvnv Account",
+                strip_tags(html_massage),
+                settings.EMAIL_FROM,
+                [self.email],
+                fail_silently=False,
+                html_message=html_massage,
+            )
+
+            self.save()
+        return
+

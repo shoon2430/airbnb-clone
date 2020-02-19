@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+    Search
+{% endblock page_title %}
+
+{% block search-bar %}
+   
+{% endblock search-bar %}
+
+
+{% block content %}
+
+    <h2>Search!!</h2>
+
+    <h4>Search by {{city}}</h4>
+
+    <form method="get" action="{% url "rooms:search" %}">
+        <div>
+            <lable for="city">City</lable>
+            <input id="city" name="city" placeholder ="Search by City" value="{{city}}" />
+     
+        </div>
+        <div>
+            <lable for="country"> Countries </lable>
+            <select id="country" name="country">
+                {% for code, name in countries %}
+                    <option value="{{code}}" {% if code == select_country %} selected {% endif %}>{{name}}</optin>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <lable for="room_type"> Room_type </lable>
+            <select id="room_type" name="room_type">
+                <option value=0 {% if select_room_type == 0 %} selected {% endif %}> Any kind</option>
+                {% for room_type in room_types %}
+                    <option value="{{room_type.pk}}" {% if room_type.pk == select_room_type %} selected {% endif %}>{{room_type.name}}</optin>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <lable for="price"> Price </lable>
+            <input type="number" id="price" name="price" placeholder ="Price" value="{{price}}" />
+        </div>
+        <div>
+            <lable for="guests"> Guests </lable>
+            <input type="number" id="guests" name="guests" placeholder ="Guests" value="{{guests}}" />
+        </div>
+        <div>
+            <lable for="bedrooms"> Bedrooms </lable>
+            <input type="number" id="bedrooms" name="bedrooms" placeholder ="Bedrooms" value="{{bedrooms}}" />
+        </div>
+        <div>
+            <lable for="beds"> Beds </lable>
+            <input type="number" id="beds" name="beds" placeholder ="Beds" value="{{beds}}" />
+        </div>
+        <div>
+            <lable for="baths"> Baths </lable>
+            <input type="number" id="baths" name="baths" placeholder ="Baths" value="{{baths}}" />
+        </div>
+
+        <div>
+            <lable for="instant"> Instant Book Only? </lable>
+            <input type="checkbox" id="instant" name="instant" {% if instant %} checked {% endif %}/>
+        </div>
+        <div>
+            <lable for="superhost"> Super Host Only?</lable>
+            <input type="checkbox" id="superhost" name="superhost" {% if superhost %} checked {% endif %}/>
+        </div>
+
+        <div>
+            <h3 for="amenity"> Amenity </h3>
+            <ul>
+                {% for amenity in amenities  %}
+                    <li>
+                        <lable for="a_{{amenity.pk}}">{{amenity.name}}</label>
+                        <input 
+                            id="a_{{amenity.pk}}"
+                            name="amenities" 
+                            type="checkbox" 
+                            value={{amenity.pk}} 
+                            {% if amenity.pk|slugify  in s_amenities %}
+                            checked
+                            {% endif %} 
+                        />
+                    </li>
+                
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h3 for="facilities"> Facilities </h3>
+            <ul>
+                {% for facility in facilities  %}
+                    <li>
+                        <lable for="f_{{facility.pk}}">{{facility}}</label>
+                        <input 
+                            id="f_{{facility.pk}}" 
+                            name="facilities" 
+                            type="checkbox" 
+                            value={{facility.pk}} 
+                            {% if facility.pk|slugify in s_facilities %}
+                            checked
+                            {% endif %} 
+                        />
+                    </li>
+                
+                {% endfor %}
+            </ul>
+        </div>
+
+
+        <button> Search </button>
+        
+
+    </form>
+
+    {% for room in rooms  %}
+        <h4>
+            {{room}}
+        </h4>
+    {% endfor %}
+
+{% endblock content %}  

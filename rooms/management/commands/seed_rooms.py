@@ -33,6 +33,7 @@ class Command(BaseCommand):
             Room,
             number,
             {
+                # "country": "KR",
                 "name": lambda x: seeder.faker.address(),
                 "host": lambda x: random.choice(users),
                 "room_type": lambda x: random.choice(room_types),
