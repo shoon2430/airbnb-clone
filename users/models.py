@@ -41,7 +41,17 @@ class User(AbstractUser):
         (CURRENCY_KRW, "KRW"),
     ]
 
-    avator = models.ImageField(upload_to="avatars", null=True, blank=True)
+    LOGIN_EMAIL = "email"
+    LOGIN_GITHUB = "github"
+    LOGIN_KAKAO = "kakao"
+
+    LOGIN_CHOICES = [
+        (LOGIN_EMAIL, "Email"),
+        (LOGIN_GITHUB, "Git hub"),
+        (LOGIN_KAKAO, "Kakao"),
+    ]
+
+    avatar = models.ImageField(upload_to="avatars", null=True, blank=True)
     gender = models.CharField(
         choices=GENDER_CHOICES, max_length=10, null=True, blank=True
     )
@@ -65,6 +75,9 @@ class User(AbstractUser):
 
     email_verified = models.BooleanField(default=False)
     email_secret = models.CharField(max_length=120, default="", blank=True)
+    login_method = models.CharField(
+        max_length=50, choices=LOGIN_CHOICES, default=LOGIN_EMAIL
+    )
 
     def verify_email(self):
         if self.email_verified is False:
