@@ -136,3 +136,4 @@ uploads/
 
 .env
 node_modules/
+static/css/
