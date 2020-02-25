@@ -11,3 +11,6 @@ class ReviewAdmin(admin.ModelAdmin):
 
     list_display = ("user", "__str__", "rating_average")
 
+    search_fields = [
+        "review",
+    ]
