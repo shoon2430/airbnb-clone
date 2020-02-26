@@ -1,9 +1,11 @@
 from pprint import pprint
+from django.utils import timezone
 from django.db import models
 from django.urls import reverse
 from django_countries.fields import CountryField
 from core import models as core_models
 
+from cal import Calendar
 
 # from users import models as user_models
 
@@ -117,10 +119,14 @@ class Room(core_models.TimeStampModel):
         return reverse("rooms:detail", kwargs={"pk": self.pk})
 
     def first_photo(self):
-        (photo,) = self.photos.all()[:1]
-        return photo.file.url
+        try:
+            (photo,) = self.photos.all()[:1]
+            return photo.file.url
+        except ValueError:
+            return None
 
     def get_next_four_photos(self):
+
         photos = self.photos.all()[1:5]
         print(photos)
         return photos
@@ -130,3 +136,15 @@ class Room(core_models.TimeStampModel):
             return "1 bed"
         else:
             return f"{self.beds} bed"
+
+    def get_calendars(self):
+        now = timezone.now()
+        this_year = now.year
+        this_month = now.month
+        next_month = this_month + 1
+        this_month_cal = Calendar(this_year, this_month)
+        if this_month == 12:
+            this_year += 1
+            next_month = 1
+        next_month_cal = Calendar(this_year, next_month)
+        return [this_month_cal, next_month_cal]

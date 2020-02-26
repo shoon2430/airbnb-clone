@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.files.base import ContentFile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 
 from . import forms, models, mixins
@@ -221,9 +222,9 @@ def kakao_callback(request):
 
             if email is not None:
                 properties = profile_json.get("properties")
-                nickname = properties.get("nickname")
+                nickname = properties.get("nickname", "I don't have Nickname")
                 profile_image = properties.get("profile_image")
-
+                nickname = "hoon"
                 try:
                     user = models.User.objects.get(email=email)
                     if user.login_method != models.User.LOGIN_KAKAO:
@@ -301,9 +302,10 @@ class UpdateProfileView(mixins.LoginOnlyView, SuccessMessageMixin, UpdateView):
 
 class UpdatePasswordView(
     mixins.EmailLoginOnlyView,
-    mixins.LoginOnlyView, 
+    mixins.LoginOnlyView,
     SuccessMessageMixin,
-    PasswordChangeView):
+    PasswordChangeView,
+):
 
     template_name = "users/update-password.html"
 
@@ -319,3 +321,14 @@ class UpdatePasswordView(
 
     def get_success_url(self):
         return self.request.user.get_absolute_url()
+
+
+@login_required
+def switch_hosting(request):
+    try:
+        del request.session["is_hosting"]
+        return redirect(reverse("core:home"))
+    except KeyError:
+        request.session["is_hosting"] = True
+        return redirect(reverse("core:home"))
+

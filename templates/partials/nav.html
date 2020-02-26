@@ -1,6 +1,18 @@
 <ul class="flex items-center text-sm font-semibold h-full">
     {% if user.is_authenticated %}
         <h4> {{user.username}} </h4>
+        <li class="nav_link">
+            <a href="{%url "users:switch" %}">
+                {% if "is_hosting" in request.session %}
+                    Stop hosting
+                {% else %}
+                    Start hosting
+                {% endif %}
+            </a>
+        </li>
+        {% if "is_hosting" in request.session %}
+            <li class="nav_link"><a href="{%url "rooms:create" %}">Upload Room</a></li>
+        {% endif %}
         <li class="nav_link"><a href="{{user.get_absolute_url}}">Profile</a></li>
         <li class="nav_link"><a href="{%url "users:logout" %}">Log out</a></li>
     {% else %}
