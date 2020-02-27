@@ -20,8 +20,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("", include("core.urls", namespace="core")),
-    path("room/",include("rooms.urls", namespace="rooms")),
-    path("user/",include("users.urls", namespace="users")),
+    path("room/", include("rooms.urls", namespace="rooms")),
+    path("reservation/", include("reservations.urls", namespace="reservations")),
+    path("user/", include("users.urls", namespace="users")),
+    path("review/", include("reviews.urls", namespace="reviews")),
     path("admin/", admin.site.urls),
 ]
 

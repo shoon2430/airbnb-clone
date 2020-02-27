@@ -2,8 +2,8 @@ import os
 import requests
 from pprint import pprint
 
-
-from django.http import HttpResponseRedirect
+from django.utils import translation
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import FormView, DetailView, UpdateView
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
@@ -154,7 +154,7 @@ def github_callback(request):
                     name = profile_json.get("name")
                     email = profile_json.get("email")
                     bio = profile_json.get("bio")
-
+                    profile_image = profile_json.get("avatar_url")
                     try:
                         user = models.User.objects.get(email=email)
                         if user.login_method != models.User.LOGIN_GITHUB:
@@ -172,6 +172,12 @@ def github_callback(request):
                         )
                         user.set_unusable_password()
                         user.save()
+                        if profile_image is not None:
+                            photo_request = requests.get(profile_image)
+                            user.avatar.save(
+                                f"{name}-avatar", ContentFile(photo_request.content)
+                            )
+
                     login(request, user)
                     messages.success(request, f"Welcome back {user.first_name}")
                     return redirect(reverse("core:home"))
@@ -332,3 +338,10 @@ def switch_hosting(request):
         request.session["is_hosting"] = True
         return redirect(reverse("core:home"))
 
+
+def switch_language(request):
+    lang = request.GET.get("lang", None)
+    if lang is not None:
+        request.session[translation.LANGUAGE_SESSION_KEY] = "en"
+        pprint(vars(request.session))
+    return HttpResponse(status=200)

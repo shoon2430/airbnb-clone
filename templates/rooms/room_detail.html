@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load is_booked %}
+
 
 {% block page_title %}
     {{room.name}}
@@ -105,6 +107,7 @@
                             </div>   
                             <div class="cal-grid">
                                 {% for day in calendar.get_days %}
+                                    {% is_booked room day as is_booked_bool %}
                                     {% if day.number == 0 %}
                                         <span></span>
                                     {%else%}
@@ -112,12 +115,16 @@
                                             <span class="bg-gray-200 w-3/4 text-center rounded text-gray-400 p-2 m-1">
                                                 {{day}}
                                             </span>
+                                        {% elif is_booked_bool %}
+                                            <span class="bg-gray-200 w-3/4 text-center rounded text-gray-500 p-2 m-1 line-through">
+                                                {{day}}
+                                            </span>
                                         {% else %}
-                                            <span class="bg-gray-200 w-3/4 text-center rounded text-gray-700 p-2 m-1 
+                                            <a href="{%url 'reservations:create' room.pk day.year day.month day.number  %}" class="bg-gray-200 w-3/4 text-center rounded text-gray-700 p-2 m-1 
                                                             hover:bg-teal-400 
                                                             hover:text-white cursor-pointer">
                                                 {{day}}
-                                            </span>
+                                            </a>
                                         {% endif %}
                                     {% endif %} 
                                 {% endfor %}
